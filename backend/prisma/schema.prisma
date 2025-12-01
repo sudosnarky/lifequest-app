@@ -1,0 +1,135 @@
+// Prisma Schema for LifeQuest
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LifeCategory {
+  ACADEMICS
+  FITNESS
+  CREATIVITY
+  EXPLORATION
+  WELLNESS
+}
+
+enum QuestType {
+  DAILY
+  WEEKLY
+}
+
+enum QuestDifficulty {
+  EASY
+  MEDIUM
+  HARD
+  EPIC
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  
+  // Profile
+  name      String
+  avatarUri String?
+  avatarColor String  @default("#4a8cc7")
+  
+  // Stats
+  level     Int      @default(1)
+  currentXp Int      @default(0)
+  totalXp   Int      @default(0)
+  
+  // Category XP
+  academicsXp   Int  @default(0)
+  fitnessXp     Int  @default(0)
+  creativityXp  Int  @default(0)
+  explorationXp Int  @default(0)
+  wellnessXp    Int  @default(0)
+  
+  // Relationships
+  quests        Quest[]
+  badges        Badge[]
+  achievements  UserAchievement[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastActive DateTime @default(now())
+  
+  @@map("users")
+}
+
+model Quest {
+  id          String          @id @default(uuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  category    LifeCategory
+  type        QuestType
+  difficulty  QuestDifficulty
+  xpReward    Int
+  
+  // Completion tracking
+  completed   Boolean         @default(false)
+  completedAt DateTime?
+  
+  // Daily quest specific
+  streak      Int             @default(0)
+  
+  // Weekly quest specific
+  dueDate     DateTime?
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  
+  @@index([userId, type])
+  @@index([userId, category])
+  @@map("quests")
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  category    String   // Can be LifeCategory or "general"
+  icon        String?
+  requirement String
+  xpReward    Int      @default(0)
+  
+  users       UserAchievement[]
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  unlockedAt    DateTime    @default(now())
+  
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+model Badge {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name      String
+  earnedAt  DateTime @default(now())
+  
+  @@map("badges")
+}
