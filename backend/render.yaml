@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: lifequest-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lifequest-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+    healthCheckPath: /health
+
+databases:
+  - name: lifequest-db
+    databaseName: lifequest
+    user: lifequest
+    plan: free
