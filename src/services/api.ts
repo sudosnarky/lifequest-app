@@ -2,9 +2,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Base URL - update this for your environment
+// Use your machine's local IP when testing with Expo Go
 const API_BASE_URL = __DEV__ 
-  ? 'http://172.21.244.33:3000/api'  // Development: Use your computer's IP
-  : 'https://lifequest-app-production.up.railway.app/api'; // Production: Railway API URL
+  ? 'http://172.21.244.33:3000/api'  // Development: Local backend
+  : 'https://lifequest-backend-5d27.onrender.com/api'; // Production: Render deployment
+
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 // Create axios instance
 const apiClient = axios.create({
