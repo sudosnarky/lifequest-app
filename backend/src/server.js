@@ -68,11 +68,11 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 LifeQuest API running on port ${PORT}`);
   console.log(`📝 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🔗 API: http://localhost:${PORT}`);
-  console.log(`💚 Health: http://localhost:${PORT}/health`);
+  console.log(`🔗 API: http://0.0.0.0:${PORT}`);
+  console.log(`💚 Health: http://0.0.0.0:${PORT}/health`);
 });
 
 module.exports = app;
