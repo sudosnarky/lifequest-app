@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // API Base URL - update this for your environment
 const API_BASE_URL = __DEV__ 
   ? 'http://172.21.244.33:3000/api'  // Development: Use your computer's IP
-  : 'https://your-production-api.com/api'; // Production: Update with your deployed API URL
+  : 'https://lifequest-app-production.up.railway.app/api'; // Production: Railway API URL
 
 // Create axios instance
 const apiClient = axios.create({
